@@ -18,18 +18,19 @@
 void znajdzDokladnePokrycie (int wyraz[], int tablica[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_WIERSZY],
                              int ostatnioSprawdzanyWiersz, const int dlugoscWejscia) {
 
-    while (ostatnioSprawdzanyWiersz < dlugoscWejscia) {
 
-    }
 }
+
 
 bool koniecWierszaWejscia (const int *znak) {
     return (*znak == ZNAK_NOWEJ_LINII || *znak == EOF);
 }
 
+
 bool czyDrukowacZnak (const int znakZFiltru) {
     return znakZFiltru == PLUS;
 }
+
 
 void drukujFiltrowanaTablice (const int tablica[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_KOLUMN], const int filtr[], const int dlugosc) {
     for (int i = 0; i < MAX_DLUGOSC_KOLUMN; i++) {
@@ -46,6 +47,7 @@ void drukujFiltrowanaTablice (const int tablica[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_
         }
     }
 }
+
 
 /** Parsuje wiersz ze standardowego wiersza i zwraca jego dlugosc.
  *  Zmienia wartosc parametru wiersz[] na sparsowane wejscie
@@ -72,9 +74,14 @@ void parsujWejscie (int filtr[], int instancje[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_W
 
     if (dlugoscWiersza > 0) {
         int indeksWiersza = 0;
+        while (parsujWiersz(instancje[indeksWiersza]) == dlugoscWiersza
+                && indeksWiersza < MAX_DLUGOSC_KOLUMN) {
 
+            indeksWiersza++;
+        }
     }
 }
+
 
 /** Glowna funkcja sterujaca programu.
  *
@@ -85,6 +92,7 @@ void dokladnePokrycie () {
 
 
 }
+
 
 int main(void) {
     printf("Hello, World!\n");
