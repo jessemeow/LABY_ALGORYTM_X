@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define MAX_DLUGOSC_WIERSZY 300
-#define MAX_DLUGOSC_KOLUMN 200
-// [MAX_DLUGOSC_WIERSZY, MAX_DLUGOSC_KOLUMN]
+// usun komentarze "KOM"
+// co jesli puste wejscie?
+
+#define BLAD 5 // KOM zmien te nazwe...
+#define MAX_DLUGOSC_WIERSZY (300 + BLAD)
+#define MAX_DLUGOSC_KOLUMN (200 + BLAD)
+// KOM [MAX_DLUGOSC_WIERSZY, MAX_DLUGOSC_KOLUMN]
 #define PODLOGA '_'
 #define PLUS '+'
 #define MINUS '-'
@@ -23,72 +27,51 @@ bool koniecWierszaWejscia (const int *znak) {
     return (*znak == ZNAK_NOWEJ_LINII || *znak == EOF);
 }
 
-bool czyDrukowacZnak (const int *znakZFiltru) {
-    return *znakZFiltru == PLUS;
+bool czyDrukowacZnak (const int znakZFiltru) {
+    return znakZFiltru == PLUS;
 }
 
-void drukujFiltrowanaTablice (const int tablica[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_KOLUMN], const int filtr[], const int *dlugosc) {
+void drukujFiltrowanaTablice (const int tablica[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_KOLUMN], const int filtr[], const int dlugosc) {
     for (int i = 0; i < MAX_DLUGOSC_KOLUMN; i++) {
-        for (int j = 0; j < *dlugosc; j++) {
-            int znakFiltru = filtr[j];
+        for (int j = 0; j < dlugosc; j++) {
+            const int znakFiltru = filtr[j];
 
-            if (czyDrukowacZnak(&znakFiltru)) {
+            if (czyDrukowacZnak(znakFiltru)) {
                 putchar(tablica[i][j]);
 
-                if (j == *dlugosc - 1) {
-                    putchar(SPACJA);
+                if (j == dlugosc - 1) {
+                    putchar(SPACJA); // KOM     co
                 }
             }
         }
     }
 }
 
-/*
- * Zwroci falsz jezeli jest koniec wejscia,
- * zwroci prawde w przeciwnym wypadku.
+/** Parsuje wiersz ze standardowego wiersza i zwraca jego dlugosc.
+ *  Zmienia wartosc parametru wiersz[] na sparsowane wejscie
+ *  i ustawia jego ostatni znak (po wierszu wejscia) na znak nowej
  */
-bool parsujWiersz (int wynik[]) {
+int parsujWiersz (int wiersz[]) {
     int znak = getchar();
 
-    int i = 0;
-    while (!koniecWierszaWejscia(&znak)) {
-        wynik[i] = znak;
+    int licznik = 0;
+    while (!koniecWierszaWejscia(&znak) && licznik < MAX_DLUGOSC_KOLUMN) {
+        wiersz[licznik] = znak;
+        licznik++;
         znak = getchar();
     }
+    wiersz[licznik] = ZNAK_NOWEJ_LINII;
 
-    if (znak == EOF) {
-        return false;
-    }
-
-    return true;
-}
-
-void usunZnakNowejLinii (int indeksKoncaa) {
-
+    return licznik;
 }
 
 
-/** Wczytuje filtr (pierwszy wiersz) ze standardowego wejscia i zwraca jego dlugosc
- *  Zmienia wartosc parametru filtr[] na sparsowany filtr.
- */
-int parsujFiltr (int filtr[]) {
-    int znak = getchar();
-
-    int dlugosc = 0;
-    while (!koniecWierszaWejscia(&znak)) {
-        filtr[dlugosc] = znak;
-        dlugosc++;
-    }
-
-    return dlugosc;
-}
-
-void parsujWejscie (int filtr[], int wejscie[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_WIERSZY]) {
-    const int dlugoscWiersza = parsujFiltr(filtr);  // Wczytujemy filtr
+//  instancje - instancje problemu dokładnego pokrycia
+void parsujWejscie (int filtr[], int instancje[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_WIERSZY]) {
+    const int dlugoscWiersza = parsujWiersz(filtr);  // Wczytujemy filtr oraz jego dlugosc
 
     if (dlugoscWiersza > 0) {
         int indeksWiersza = 0;
-        int indeksKolumny = 0;
 
     }
 }
