@@ -14,6 +14,18 @@
 #define SPACJA ' '
 #define ZNAK_NOWEJ_LINII '\n'
 
+bool czyWierszePasuja (const int A[], const int B[], const int dlugosc) {
+    bool czyPasuja = true;
+    int indeks = 0;
+
+    while (indeks < dlugosc && czyPasuja) {
+        if ((A[indeks] != PODLOGA) && (B[indeks] != PODLOGA)) {
+            czyPasuja = false;
+        }
+        indeks++;
+    }
+    return czyPasuja;
+}
 
 void znajdzDokladnePokrycie (int wyraz[], int tablica[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_WIERSZY],
                              int ostatnioSprawdzanyWiersz, const int dlugoscWejscia) {
