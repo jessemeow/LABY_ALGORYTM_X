@@ -11,6 +11,14 @@
 #define ZNAK_NOWEJ_LINII '\n'
 
 
+void znajdzDokladnePokrycie (int wyraz[], int tablica[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_WIERSZY],
+                             int ostatnioSprawdzanyWiersz, const int dlugoscWejscia) {
+
+    while (ostatnioSprawdzanyWiersz < dlugoscWejscia) {
+
+    }
+}
+
 bool koniecWierszaWejscia (const int *znak) {
     return (*znak == ZNAK_NOWEJ_LINII || *znak == EOF);
 }
@@ -35,10 +43,6 @@ void drukujFiltrowanaTablice (const int tablica[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_
     }
 }
 
-void dokladnePokrycie () {
-
-}
-
 /*
  * Zwroci falsz jezeli jest koniec wejscia,
  * zwroci prawde w przeciwnym wypadku.
@@ -58,6 +62,11 @@ bool parsujWiersz (int wynik[]) {
 
     return true;
 }
+
+void usunZnakNowejLinii (int indeksKoncaa) {
+
+}
+
 
 /** Wczytuje filtr (pierwszy wiersz) ze standardowego wejscia i zwraca jego dlugosc
  *  Zmienia wartosc parametru filtr[] na sparsowany filtr.
@@ -81,14 +90,13 @@ void parsujWejscie (int filtr[], int wejscie[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_WIE
         int indeksWiersza = 0;
         int indeksKolumny = 0;
 
-        wejscie[0][0] = indeksWiersza + indeksKolumny; // skasuj
     }
 }
 
 /** Glowna funkcja sterujaca programu.
  *
  */
-void znajdzDokladnePokrycie () {
+void dokladnePokrycie () {
     //int filtr[MAX_DLUGOSC_WIERSZY];
     //int wejscie[MAX_DLUGOSC_KOLUMN][MAX_DLUGOSC_WIERSZY];
 
