@@ -14,3 +14,4 @@ add_compile_options(
 add_executable(LABY_ALGORYTM_X main.c)
 
 
+target_link_options(LABY_ALGORYTM_X PRIVATE -fsanitize=undefined)

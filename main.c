@@ -4,7 +4,7 @@
 // usun komentarze "KOM"
 // co jesli puste wejscie?
 
-#define BLAD 10 // KOM zmien te nazwe...
+#define BLAD 100 // KOM zmien te nazwe...
 #define MAX_LICZBA_KOLUMN (300 + BLAD)
 #define MAX_LICZBA_WIERSZY (200 + BLAD)
 // KOM [MAX_DLUGOSC_WIERSZY, MAX_DLUGOSC_KOLUMN]
@@ -46,12 +46,11 @@ void drukujFiltrowanyWiersz (const int wiersz[MAX_LICZBA_KOLUMN], const int filt
     for (int i = 0; i < dlugosc; i++) {
         if (czyDrukowacZnak(filtr[i])) {
             putchar(wiersz[i]);
-
-            if (i == dlugosc - 1) {
-                putchar(SPACJA); // KOM     co
-            }
         }
     }
+
+    putchar(ZNAK_NOWEJ_LINII);
+    // zakladamy, ze wypisujemy pusty wiersz //np sgdy sa ssame minusy w filtrzze lub dl = 0
 }
 
 //OK
@@ -135,7 +134,7 @@ int parsujWiersz (int wiersz[]) {
     int znak = getchar();
 
     int licznik = 0;
-    while (!koniecWierszaWejscia(&znak) && licznik < MAX_LICZBA_WIERSZY) {
+    while (!koniecWierszaWejscia(&znak) && licznik < MAX_LICZBA_KOLUMN) {
         wiersz[licznik] = znak;
         licznik++;
         znak = getchar();
@@ -151,18 +150,24 @@ int parsujWiersz (int wiersz[]) {
 // OK
 void parsujWejscie (int filtr[], struct tablica2D *wejscie) {
     const int dlugoscWiersza = parsujWiersz(filtr);  // Wczytujemy filtr oraz jego dlugosc
+    wejscie->liczbaKolumn = dlugoscWiersza;
 
     if (dlugoscWiersza > 0) {
         int indeksWiersza = 0;
-        int tempDlugoscWejscia = dlugoscWiersza;
+        int tempDlugosc = dlugoscWiersza;
 
-        while (indeksWiersza < MAX_LICZBA_WIERSZY && tempDlugoscWejscia == dlugoscWiersza) {
-            tempDlugoscWejscia = parsujWiersz(wejscie->tablica[indeksWiersza]); // KOM co jak puste wejscie?
-            indeksWiersza++;
+        while (indeksWiersza < MAX_LICZBA_WIERSZY && tempDlugosc == dlugoscWiersza) {
+            tempDlugosc = parsujWiersz(wejscie->tablica[indeksWiersza]); // KOM co jak puste wejscie?
+
+            if (tempDlugosc != 0) {
+                indeksWiersza++;
+            }
         }
         wejscie->liczbaWierszy = indeksWiersza;
     }
-    wejscie->liczbaKolumn = dlugoscWiersza;
+    else {
+        wejscie->liczbaWierszy = 0;
+    }
 }
 
 //OK
@@ -176,8 +181,15 @@ void zmienTabliceNaPusta (int tablica[]) {
  *
  */
 void dokladnePokrycie () {
-    int filtr[MAX_LICZBA_KOLUMN];
+    int filtr[MAX_LICZBA_KOLUMN] = {0};
+    zmienTabliceNaPusta(filtr);
+
     struct tablica2D wejscie;
+    for (int i = 0; i < MAX_LICZBA_WIERSZY; i++) {
+        for (int j = 0; j < MAX_LICZBA_KOLUMN; j++) {
+            wejscie.tablica[i][j] = PODLOGA;
+        }
+    }
 
     parsujWejscie(filtr, &wejscie);
 
