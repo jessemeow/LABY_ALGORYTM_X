@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
-project(LABY2 C)
+project(LABY_ALGORYTM_X)
 
 set(CMAKE_C_STANDARD 23)
-
 
 add_compile_options(
         -pedantic -Wall -Wextra -Wformat-security -Wduplicated-cond
@@ -12,6 +11,6 @@ add_compile_options(
         -g -fno-omit-frame-pointer -O1
 )
 
-add_executable(LABY2 main.c)
+add_executable(LABY_ALGORYTM_X main.c)
 
 
