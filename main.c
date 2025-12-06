@@ -77,8 +77,8 @@ bool czyWierszePasuja (const int wierszA[], const int wierszB[], const int dlugo
  */
 int sklejWiersze (int zmienianyWiersz[], const int wiersz[], const int dlugosc) {
     int iloscDodanychZnakow = 0;
-
     int indeks = 0;
+
     while (indeks < dlugosc) {
         if (zmienianyWiersz[indeks] == PODLOGA && wiersz[indeks] != PODLOGA) {
             // Znalezlismy znak, ktorego mozna dokleic.
@@ -87,7 +87,6 @@ int sklejWiersze (int zmienianyWiersz[], const int wiersz[], const int dlugosc) 
         }
         indeks++;
     }
-
     return iloscDodanychZnakow;
 }
 
@@ -115,7 +114,8 @@ void cofnijSklejenie (int zmienianyWiersz[], const int wiersz[], const int dlugo
  * @param wyraz Obecny stan wyrazenia.
  * @param wejscie Sparsowane wejscie i jego rzeczywiste wymiary.
  * @param indeksOstatniego Indeks ostatniego sprawdzanego wiersza wejscia.
- * @param ileZnakow Ilosc znakow niebedacych znakiem PODLOGA w obecnym stanie wyrazenia.
+ * @param ileZnakow Ilosc znakow niebedacych znakiem PODLOGA w obecnym stanie wyrazenia,
+ * potrzebne, aby wiedziec kiedy mozna wydrukowac wyrazenie.
  * @param filtr Sparsowany filtr potrzebny do poprawnego drukowania poprawnego wyrazenia.
  */
 void znajdzDokladnePokrycie (int wyraz[], struct tablica2D *wejscie,
@@ -166,7 +166,6 @@ int parsujWiersz (int wiersz[]) {
         licznik++;
         znak = getchar();
     }
-
     return licznik;
 }
 
@@ -245,7 +244,6 @@ void dokladnePokrycie () {
     if (wejscie.liczbaKolumn > 0 && wejscie.liczbaKolumn < MAX_LICZBA_KOLUMN && wejscie.liczbaWierszy < MAX_LICZBA_WIERSZY) {
         int wyraz[MAX_LICZBA_KOLUMN];
         zmienTabliceNaPusta(wyraz);
-
         znajdzDokladnePokrycie(wyraz, &wejscie, INDEKS_NIEUSTALONY, 0,  filtr);
     }
 }
