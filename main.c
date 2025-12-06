@@ -4,9 +4,9 @@
 // usun komentarze "KOM"
 // co jesli puste wejscie?
 
-#define BLAD 100 // KOM zmien te nazwe...
-#define MAX_LICZBA_KOLUMN (300 + BLAD)
-#define MAX_LICZBA_WIERSZY (200 + BLAD)
+#define MARGINES_BLEDU 100 // KOM zmien te nazwe...
+#define MAX_LICZBA_KOLUMN (300 + MARGINES_BLEDU)
+#define MAX_LICZBA_WIERSZY (200 + MARGINES_BLEDU)
 // KOM [MAX_DLUGOSC_WIERSZY, MAX_DLUGOSC_KOLUMN]
 #define PODLOGA '_'
 #define PLUS '+'
@@ -27,21 +27,6 @@ bool czyDrukowacZnak (const int znakZFiltru) {
 }
 
 
-bool czyPelnyWyraz (const int wyraz[MAX_LICZBA_KOLUMN], const int dlugosc) {
-    bool czyPelny = true;
-    int indeks = 0;
-
-    printf("dlugpsc: %d\n", dlugosc); // KOM
-    while (indeks < dlugosc && czyPelny) {
-        if (wyraz[indeks] == PODLOGA) { // BŁAD JEST TUTAJ
-            czyPelny = false;
-        }
-        indeks++;
-    }
-    return czyPelny;
-}
-
-
 void drukujFiltrowanyWiersz (const int wiersz[MAX_LICZBA_KOLUMN], const int filtr[], const int dlugosc) {
     for (int i = 0; i < dlugosc; i++) {
         if (czyDrukowacZnak(filtr[i])) {
@@ -53,7 +38,7 @@ void drukujFiltrowanyWiersz (const int wiersz[MAX_LICZBA_KOLUMN], const int filt
     // zakladamy, ze wypisujemy pusty wiersz //np sgdy sa ssame minusy w filtrzze lub dl = 0
 }
 
-//OK
+
 bool czyWierszePasuja (const int A[], const int B[], const int dlugosc) {
     bool czyPasuja = true;
     int indeks = 0;
@@ -69,7 +54,6 @@ bool czyWierszePasuja (const int A[], const int B[], const int dlugosc) {
 
 // zwraca ilosc dodanych znakow
 // KOM ale to jest brzydkie xddd
-// OK
 int sklejWiersze (int zmienianyWiersz[], const int wiersz[], const int dlugosc) {
     const bool czyPasuja = czyWierszePasuja(zmienianyWiersz, wiersz, dlugosc);
     int iloscDodanychZnakow = 0;
@@ -88,7 +72,6 @@ int sklejWiersze (int zmienianyWiersz[], const int wiersz[], const int dlugosc) 
 }
 
 // zal ze wczesniej wiersze pasowaly i byly sklejone
-// OK
 void cofnijSklejenie (int zmienianyWiersz[], const int wiersz[], const int dlugosc) {
     for (int i = 0; i < dlugosc; i++) {
         if (wiersz[i] != PODLOGA) {
@@ -119,7 +102,7 @@ void znajdzDokladnePokrycie (int wyraz[], struct tablica2D *wejscie,
     }
 }
 
-// OK
+
 bool koniecWierszaWejscia (const int *znak) {
     return (*znak == ZNAK_NOWEJ_LINII || *znak == EOF);
 }
@@ -129,7 +112,6 @@ bool koniecWierszaWejscia (const int *znak) {
  *  Zmienia wartosc parametru wiersz[] na sparsowane wejscie
  *  i ustawia jego ostatni znak (po wierszu wejscia) na znak nowej
  */
-// OK
 int parsujWiersz (int wiersz[]) {
     int znak = getchar();
 
@@ -147,7 +129,6 @@ int parsujWiersz (int wiersz[]) {
 //  instancje - instancje problemu dokładnego pokrycia
 //zwraca dl
 // zmienia param
-// OK
 void parsujWejscie (int filtr[], struct tablica2D *wejscie) {
     const int dlugoscWiersza = parsujWiersz(filtr);  // Wczytujemy filtr oraz jego dlugosc
     wejscie->liczbaKolumn = dlugoscWiersza;
@@ -170,10 +151,19 @@ void parsujWejscie (int filtr[], struct tablica2D *wejscie) {
     }
 }
 
-//OK
+
 void zmienTabliceNaPusta (int tablica[]) {
     for (int i = 0; i < MAX_LICZBA_KOLUMN; i++) {
         tablica[i] = PODLOGA;
+    }
+}
+
+
+void zmienTablice2DNaPusta (struct tablica2D *tablica2D) {
+    for (int i = 0; i < MAX_LICZBA_WIERSZY; i++) {
+        for (int j = 0; j < MAX_LICZBA_KOLUMN; j++) {
+            tablica2D->tablica[i][j] = PODLOGA;
+        }
     }
 }
 
@@ -185,15 +175,12 @@ void dokladnePokrycie () {
     zmienTabliceNaPusta(filtr);
 
     struct tablica2D wejscie;
-    for (int i = 0; i < MAX_LICZBA_WIERSZY; i++) {
-        for (int j = 0; j < MAX_LICZBA_KOLUMN; j++) {
-            wejscie.tablica[i][j] = PODLOGA;
-        }
-    }
+    zmienTablice2DNaPusta(&wejscie); // KOM moze byc problem
 
     parsujWejscie(filtr, &wejscie);
 
     if (wejscie.liczbaKolumn > 0 && wejscie.liczbaKolumn < MAX_LICZBA_KOLUMN && wejscie.liczbaWierszy < MAX_LICZBA_WIERSZY) {
+        // warunek zmien na funkcje
         int wyraz[MAX_LICZBA_KOLUMN];
         zmienTabliceNaPusta(wyraz);
 
