@@ -10,6 +10,7 @@
 #define MINUS '-'
 #define SPACJA ' '
 #define ZNAK_NOWEJ_LINII '\n'
+#define INDEKS_NIEUSTALONY (-1)
 
 /**
  * Tablica dwuwymiarowa
@@ -245,7 +246,7 @@ void dokladnePokrycie () {
         int wyraz[MAX_LICZBA_KOLUMN];
         zmienTabliceNaPusta(wyraz);
 
-        znajdzDokladnePokrycie(wyraz, &wejscie, 0, 0,  filtr);
+        znajdzDokladnePokrycie(wyraz, &wejscie, INDEKS_NIEUSTALONY, 0,  filtr);
     }
 }
 
