@@ -1,10 +1,26 @@
+/**
+ * Program "dokladne pokrycie":
+ *
+ * - czyta ze standardowego wejscia filtr (pierwszy wiersz)
+ *  oraz zestaw kolejnych wierszy danych,
+ *
+ *  - znajduje taki podzbior wczytanych wierszy, ktory
+ *  po nalozeniu na siebie tworzy pelny ciag znakow
+ *  (poprawne pokrycie), i drukuje je,
+ *  z wylaczeniem miejsc, gdzie filtr ma znak '-'.
+ *
+ *  Rozwiazanie jest oparte na algorytmie z nawrotami (backtracking).
+ *
+ *  autor: Julia Dębicka
+ */
+
 #include <stdio.h>
 #include <stdbool.h>
-
 
 #define MARGINES_BLEDU 100
 #define MAX_LICZBA_KOLUMN (300 + MARGINES_BLEDU)
 #define MAX_LICZBA_WIERSZY (200 + MARGINES_BLEDU)
+
 #define PODLOGA '_'
 #define PLUS '+'
 #define MINUS '-'
@@ -16,29 +32,28 @@
  * Tablica dwuwymiarowa
  * i jej rzeczywiste wymiary.
  */
-struct tablica2D {
+typedef struct {
     int tablica[MAX_LICZBA_WIERSZY][MAX_LICZBA_KOLUMN];
     int liczbaWierszy;
     int liczbaKolumn;
-};
+} tablica2D;
 
-/**
+
+/** @brief Sprawdza, czy dany znak z filtru oznacza miejsce,
+ * ktore nalezy drukowac.
  * @param znakZFiltru Obecnie sprawdzany znak filtru (PLUS lub MINUS).
  * @return Prawda, jezeli obecnym znakiem jest PLUS.
  */
-bool czyDrukowacZnak (const int znakZFiltru) {
+bool czyDrukowacZnak(const int znakZFiltru) {
     return znakZFiltru == PLUS;
 }
 
-/**@brief Drukuje wyraznenie wedlug wymagan zadania.
+
+/**@brief Drukuje wyrazenie, uwzgledniajac filtr.
  * przy zalozeniu, ze wyrazenie jest poprawne
  * i, ze wypisujemy pusty wiersz, jezeli w filtrze sa same znaki MINUS.
- *
- * @param wiersz
- * @param filtr
- * @param dlugosc
  */
-void drukujFiltrowanyWiersz (const int wiersz[MAX_LICZBA_KOLUMN], const int filtr[], const int dlugosc) {
+void drukujFiltrowanyWiersz(const int wiersz[MAX_LICZBA_KOLUMN], const int filtr[], const int dlugosc) {
     for (int i = 0; i < dlugosc; i++) {
         if (czyDrukowacZnak(filtr[i])) {
             putchar(wiersz[i]);
@@ -47,13 +62,13 @@ void drukujFiltrowanyWiersz (const int wiersz[MAX_LICZBA_KOLUMN], const int filt
     putchar(ZNAK_NOWEJ_LINII);
 }
 
+
 /**@brief Sprawdza, czy dwa wyrazenia moga byc sklejone,
  * tj. czy nie pokrywaja sie dwa znaki niebedace znakiem PODLOGA.
- *
  * @param dlugosc Rzeczywista dlugosc wiersza wejscia.
  * @return Czy wierszA i wierszB moga byc sklejone?
  */
-bool czyWierszePasuja (const int wierszA[], const int wierszB[], const int dlugosc) {
+bool czyWierszePasuja(const int wierszA[], const int wierszB[], const int dlugosc) {
     bool czyPasuja = true;
     int indeks = 0;
 
@@ -68,14 +83,13 @@ bool czyWierszePasuja (const int wierszA[], const int wierszB[], const int dlugo
 
 
 /**@brief Skleja dwa wyrazenia,
- *  przy zalozeniu, ze oba wyrazenia do siebie pasuja (moga byc sklejone).
- *
+ *  przy zalozeniu, ze oba wyrazenia do siebie pasuja (tj. moga byc sklejone).
  * @param zmienianyWiersz Wyrazenie, ktore modyfikujemy.
  * @param wiersz Wyrazenie, ktore doklejamy do zmienianyWiersz.
  * @param dlugosc Rzeczywista dlugosc wiersza wejscia.
  * @return Ilosc dodanych znakow to wyrazenia.
  */
-int sklejWiersze (int zmienianyWiersz[], const int wiersz[], const int dlugosc) {
+int sklejWiersze(int zmienianyWiersz[], const int wiersz[], const int dlugosc) {
     int iloscDodanychZnakow = 0;
     int indeks = 0;
 
@@ -93,12 +107,11 @@ int sklejWiersze (int zmienianyWiersz[], const int wiersz[], const int dlugosc) 
 
 /**@brief Cofa sklejenie dwoch wyrazen
  * przy zalozeniu, ze byly one wczesniej sklejone.
- *
  * @param zmienianyWiersz Wyrazenie, ktore modyfikujemy.
  * @param wiersz Wyrazenie, z ktorym zmienianyWiersz byl wczesniej sklejony.
  * @param dlugosc Rzeczywista dlugosc wiersza wejscia.
  */
-void cofnijSklejenie (int zmienianyWiersz[], const int wiersz[], const int dlugosc) {
+void cofnijSklejenie(int zmienianyWiersz[], const int wiersz[], const int dlugosc) {
     for (int i = 0; i < dlugosc; i++) {
         if (wiersz[i] != PODLOGA) {
             // Znalezlismy doklejony znak, pozbywamy sie go.
@@ -109,16 +122,15 @@ void cofnijSklejenie (int zmienianyWiersz[], const int wiersz[], const int dlugo
 
 
 /**@brief Wyznacza wyrazenia dokladnego pokrycia na podstawie parametru wejscia
- * i drukuje wszsytkie takie poprawne wyrazenia.
- *
+ * i drukuje wszystkie takie poprawne wyrazenia.
  * @param wyraz Obecny stan wyrazenia.
  * @param wejscie Sparsowane wejscie i jego rzeczywiste wymiary.
  * @param indeksOstatniego Indeks ostatniego sprawdzanego wiersza wejscia.
  * @param ileZnakow Ilosc znakow niebedacych znakiem PODLOGA w obecnym stanie wyrazenia,
- * potrzebne, aby wiedziec kiedy mozna wydrukowac wyrazenie.
+ * potrzebne, aby wiedziec, kiedy mozna wydrukowac wyrazenie.
  * @param filtr Sparsowany filtr potrzebny do poprawnego drukowania poprawnego wyrazenia.
  */
-void znajdzDokladnePokrycie (int wyraz[], struct tablica2D *wejscie,
+void znajdzDokladnePokrycie(int wyraz[], tablica2D *wejscie,
                              const int indeksOstatniego, const int ileZnakow, const int filtr[]) {
 
     const int liczbaKolumn = wejscie->liczbaKolumn;
@@ -144,20 +156,21 @@ void znajdzDokladnePokrycie (int wyraz[], struct tablica2D *wejscie,
     }
 }
 
+
 /**
  * @param znak Obecnie sprawdzany znak wejscia.
  * @return Czy koniec standardowego wejscia?
  */
-bool koniecWierszaWejscia (const int znak) {
+bool koniecWierszaWejscia(const int znak) {
     return (znak == ZNAK_NOWEJ_LINII || znak == EOF);
 }
 
 
 /**@brief Parsuje wiersz ze standardowego wiersza i zwraca jego dlugosc.
- *
- * @param wiersz Funkcja zmienia jego wartosc na pierwszy sprasowany wiersz
+ * @param wiersz Funkcja zmienia jego wartosc na pierwszy sparsowany wiersz.
+ * @return Dlugosc wczytanego wiersza.
  */
-int parsujWiersz (int wiersz[]) {
+int parsujWiersz(int wiersz[]) {
     int znak = getchar();
 
     int licznik = 0;
@@ -170,14 +183,16 @@ int parsujWiersz (int wiersz[]) {
 }
 
 
-/**@brief
- *
- * @param filtr Funkcja zmienia jego wartosc na pierwszy sprasowany wiersz
+/**@brief Wczytuje cale wejscie: najpierw filtr,
+ * a nastepnie pozostale wiersze.
+ * Ignoruje wiersze o dlugosci innej, niz dlugosc filtra,
+ * (konczy wczytywanie po napotkaniu takiego wiersza).
+ * @param filtr Funkcja zmienia jego wartosc na pierwszy sparsowany wiersz
  * @param wejscie Funkcja zmienia jej wartosc tablica na reszte sparsowanych wierszy
  * i zmienia jej wartosci liczbaWierszy i liczbaKolumn na odpowiednie liczby
  * wierszy i kolumn w parsowanym wejsciu.
  */
-void parsujWejscie (int filtr[], struct tablica2D *wejscie) {
+void parsujWejscie(int filtr[], tablica2D *wejscie) {
     const int dlugoscWiersza = parsujWiersz(filtr);  // Wczytujemy filtr oraz jego dlugosc.
     wejscie->liczbaKolumn = dlugoscWiersza; // Zapisujemy rzeczywista dlugosc wiersza wejscia.
 
@@ -188,7 +203,8 @@ void parsujWejscie (int filtr[], struct tablica2D *wejscie) {
         while (indeksWiersza < MAX_LICZBA_WIERSZY && tempDlugosc == dlugoscWiersza) {
             tempDlugosc = parsujWiersz(wejscie->tablica[indeksWiersza]);
 
-            // Jezeli dlugosc wczytanego wiersza jest rozny od rzeczywistej dlugosci wiersza konczymy wczytywanie.
+            // Jezeli dlugosc wczytanego wiersza jest rozny od
+            // rzeczywistej dlugosci wiersza konczymy wczytywanie.
             if (tempDlugosc != 0) {
                 indeksWiersza++;
             }
@@ -202,10 +218,9 @@ void parsujWejscie (int filtr[], struct tablica2D *wejscie) {
 
 
 /**@brief Zmienia cala zawartosc tablicy jednowymiarowej na znak PODLOGA
- *
  * @param tablica wszystkie wartosci zmienione na znak PODLOGA
  */
-void zmienTabliceNaPusta (int tablica[]) {
+void zmienTabliceNaPusta(int tablica[]) {
     for (int i = 0; i < MAX_LICZBA_KOLUMN; i++) {
         tablica[i] = PODLOGA;
     }
@@ -213,35 +228,35 @@ void zmienTabliceNaPusta (int tablica[]) {
 
 
 /**@brief Zmienia cala zawartosc tablicy 2D na znak PODLOGA
- *
- * @param tablica2D wszystkie wartosci zmienione na znak PODLOGA
+ * @param tablica wszystkie wartosci zmienione na znak PODLOGA
  */
-void zmienTablice2DNaPusta (struct tablica2D *tablica2D) {
+void zmienTablice2DNaPusta(tablica2D *tablica) {
     for (int i = 0; i < MAX_LICZBA_WIERSZY; i++) {
         for (int j = 0; j < MAX_LICZBA_KOLUMN; j++) {
-            tablica2D->tablica[i][j] = PODLOGA;
+            tablica->tablica[i][j] = PODLOGA;
         }
     }
 }
 
 
 /**@brief Glowna funkcja sterujaca programu.
- *
  *  @details Deklaruje i inicjalizuje tablice filtr i wejscie
  *  i wywoluje na nich parsujWejscie,
  *  po czym wywoluje funkcje pomocnicza znajdzDokladnePokrycie.
  */
-void dokladnePokrycie () {
+void dokladnePokrycie() {
     int filtr[MAX_LICZBA_KOLUMN] = {0};
     zmienTabliceNaPusta(filtr);
 
-    struct tablica2D wejscie;
+    static tablica2D wejscie;
     zmienTablice2DNaPusta(&wejscie);
 
     parsujWejscie(filtr, &wejscie);
 
     // Czy mozemy szukac dokladnego pokrycia?
-    if (wejscie.liczbaKolumn > 0 && wejscie.liczbaKolumn < MAX_LICZBA_KOLUMN && wejscie.liczbaWierszy < MAX_LICZBA_WIERSZY) {
+    if (wejscie.liczbaKolumn > 0 && wejscie.liczbaKolumn < MAX_LICZBA_KOLUMN
+        && wejscie.liczbaWierszy < MAX_LICZBA_WIERSZY) {
+
         int wyraz[MAX_LICZBA_KOLUMN];
         zmienTabliceNaPusta(wyraz);
         znajdzDokladnePokrycie(wyraz, &wejscie, INDEKS_NIEUSTALONY, 0,  filtr);
