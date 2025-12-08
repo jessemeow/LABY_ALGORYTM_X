@@ -16,11 +16,12 @@
  * Tablica dwuwymiarowa
  * i jej rzeczywiste wymiary.
  */
-struct tablica2D {
+typedef struct {
     int tablica[MAX_LICZBA_WIERSZY][MAX_LICZBA_KOLUMN];
     int liczbaWierszy;
     int liczbaKolumn;
-};
+} tablica2D;
+
 
 /**
  * @param znakZFiltru Obecnie sprawdzany znak filtru (PLUS lub MINUS).
@@ -29,6 +30,7 @@ struct tablica2D {
 bool czyDrukowacZnak (const int znakZFiltru) {
     return znakZFiltru == PLUS;
 }
+
 
 /**@brief Drukuje wyraznenie wedlug wymagan zadania.
  * przy zalozeniu, ze wyrazenie jest poprawne
@@ -46,6 +48,7 @@ void drukujFiltrowanyWiersz (const int wiersz[MAX_LICZBA_KOLUMN], const int filt
     }
     putchar(ZNAK_NOWEJ_LINII);
 }
+
 
 /**@brief Sprawdza, czy dwa wyrazenia moga byc sklejone,
  * tj. czy nie pokrywaja sie dwa znaki niebedace znakiem PODLOGA.
@@ -118,7 +121,7 @@ void cofnijSklejenie (int zmienianyWiersz[], const int wiersz[], const int dlugo
  * potrzebne, aby wiedziec kiedy mozna wydrukowac wyrazenie.
  * @param filtr Sparsowany filtr potrzebny do poprawnego drukowania poprawnego wyrazenia.
  */
-void znajdzDokladnePokrycie (int wyraz[], struct tablica2D *wejscie,
+void znajdzDokladnePokrycie (int wyraz[], tablica2D *wejscie,
                              const int indeksOstatniego, const int ileZnakow, const int filtr[]) {
 
     const int liczbaKolumn = wejscie->liczbaKolumn;
@@ -143,6 +146,7 @@ void znajdzDokladnePokrycie (int wyraz[], struct tablica2D *wejscie,
         }
     }
 }
+
 
 /**
  * @param znak Obecnie sprawdzany znak wejscia.
@@ -177,7 +181,7 @@ int parsujWiersz (int wiersz[]) {
  * i zmienia jej wartosci liczbaWierszy i liczbaKolumn na odpowiednie liczby
  * wierszy i kolumn w parsowanym wejsciu.
  */
-void parsujWejscie (int filtr[], struct tablica2D *wejscie) {
+void parsujWejscie (int filtr[], tablica2D *wejscie) {
     const int dlugoscWiersza = parsujWiersz(filtr);  // Wczytujemy filtr oraz jego dlugosc.
     wejscie->liczbaKolumn = dlugoscWiersza; // Zapisujemy rzeczywista dlugosc wiersza wejscia.
 
@@ -214,12 +218,12 @@ void zmienTabliceNaPusta (int tablica[]) {
 
 /**@brief Zmienia cala zawartosc tablicy 2D na znak PODLOGA
  *
- * @param tablica2D wszystkie wartosci zmienione na znak PODLOGA
+ * @param tablica wszystkie wartosci zmienione na znak PODLOGA
  */
-void zmienTablice2DNaPusta (struct tablica2D *tablica2D) {
+void zmienTablice2DNaPusta (tablica2D *tablica) {
     for (int i = 0; i < MAX_LICZBA_WIERSZY; i++) {
         for (int j = 0; j < MAX_LICZBA_KOLUMN; j++) {
-            tablica2D->tablica[i][j] = PODLOGA;
+            tablica->tablica[i][j] = PODLOGA;
         }
     }
 }
@@ -235,7 +239,7 @@ void dokladnePokrycie () {
     int filtr[MAX_LICZBA_KOLUMN] = {0};
     zmienTabliceNaPusta(filtr);
 
-    struct tablica2D wejscie;
+    static tablica2D wejscie;
     zmienTablice2DNaPusta(&wejscie);
 
     parsujWejscie(filtr, &wejscie);
